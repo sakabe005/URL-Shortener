@@ -21,10 +21,12 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     if (res) {
       id = res;
     }
-    id++;
+    if (typeof id === "number"|| !res) {
+      id++;
+      saveUrlNum(id);
+    }
     const shortUrl = id.toString();
     addContent(originalUrl, shortUrl);
-    saveUrlNum(shortUrl);
     showUrls(originalUrl, shortUrl);
   }
 });
@@ -96,7 +98,7 @@ function showUrls(originalUrl, shortUrl) {
  * @param {string} id
  */
 function saveUrlNum(id) {
-  chrome.storage.local.set({ "id": id });
+  chrome.storage.sync.set({ "id": id });
 }
 
 /**
