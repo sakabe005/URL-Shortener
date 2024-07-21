@@ -1,16 +1,54 @@
 // ポップアップにおいて、短縮URLを用いた移動用の関数
+
+const defaultSheetName = "URLs";
+
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('go').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('go').addEventListener('click', async function () {
     const shortUrl = document.getElementById('shortUrl1').value;
-    chrome.storage.local.get([shortUrl], function(result) {
-      if (result[shortUrl]) {
-        chrome.tabs.update({url: result[shortUrl]});
-      } else {
-        // なかった場合はURLがないと返す
-        alert('No Url');
+    const range = `${defaultSheetName}!A:B`;  // データを取得する範囲
+
+    const data = await getSpreadsheetData(range);
+    if (!data) {
+      console.error('No data found in spreadsheet');
+      return;
+    }
+
+    for (let row of data) {
+      if (row[1] === shortUrl) { // B列(short url)を確認
+        const originalUrl = row[0]; // 該当のshort urlに対応するoriginal url
+        chrome.tabs.update({ url: originalUrl });
+        return
       }
-    });
+    }
+    // なかった場合はURLがないと返す
+    alert('No Url');
   });
 });
 
+/**
+ * スプレッドシートから、選択範囲のデータを取得する
+ * @param {string} range 取得する範囲
+ * @returns {Promise<string[][]>} 取得したデータ
+ */
+const getSpreadsheetData = async (range) => {
+  const token = await getAuthToken();
+
+  const spreadsheetId = await getSpreadSheetId();
+  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?majorDimension=ROWS`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    const errorDetails = await response.json();
+    console.error('Error fetching spreadsheet data:', errorDetails);
+    return null;
+  }
+
+  const data = await response.json();
+  return data.values;
+};
