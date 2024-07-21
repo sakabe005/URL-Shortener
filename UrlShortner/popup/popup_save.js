@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
     addContent(currentUrl, shortUrl);
-    saveUrlNum(shortUrl);
     showUrls(currentUrl, shortUrl);
   });
 });

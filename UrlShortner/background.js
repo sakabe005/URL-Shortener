@@ -16,15 +16,15 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.contextMenus.onClicked.addListener(async (info) => {
   if (info.menuItemId === "UrlShortener") {
     const originalUrl = info.linkUrl;
+    // メニューから短縮する際は連番
+    // メニューから短縮する際もポップアップで入力でいいのでは？(いつき)
     let id = 0;
     const res = (await chrome.storage.sync.get('id'))['id'];
     if (res) {
       id = res;
     }
-    if (typeof id === "number"|| !res) {
-      id++;
-      saveUrlNum(id);
-    }
+    id++;
+    saveUrlNum(id);
     const shortUrl = id.toString();
     addContent(originalUrl, shortUrl);
     showUrls(originalUrl, shortUrl);
