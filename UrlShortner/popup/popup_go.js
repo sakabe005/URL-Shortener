@@ -4,27 +4,63 @@ const defaultSheetName = "URLs";
 
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
 document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById('go').addEventListener('click', async function () {
-    const shortUrl = document.getElementById('shortUrl1').value;
-    const range = `${defaultSheetName}!A:B`;  // データを取得する範囲
-
-    const data = await getSpreadsheetData(range);
-    if (!data) {
-      console.error('No data found in spreadsheet');
-      return;
+  document.getElementById('go').addEventListener('click', handleGoClick);
+  document.getElementById('shortUrl1').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      handleGoClick();
     }
-
-    for (let row of data) {
-      if (row[1] === shortUrl) { // B列(short url)を確認
-        const originalUrl = row[0]; // 該当のshort urlに対応するoriginal url
-        chrome.tabs.update({ url: originalUrl });
-        return
-      }
-    }
-    // なかった場合はURLがないと返す
-    alert('No Url');
   });
 });
+
+async function handleGoClick() {
+  const shortUrl = document.getElementById('shortUrl1').value;
+  const range = `${defaultSheetName}!A:B`;  // データを取得する範囲
+
+  const data = await getSpreadsheetData(range);
+  if (!data) {
+    console.error('No data found in spreadsheet');
+    return;
+  }
+
+  const matchingUrls = data.filter(row => row[1] === shortUrl);
+
+  if (matchingUrls.length === 0) {
+    alert('No URL found');
+  } else if (matchingUrls.length === 1) {
+    chrome.tabs.update({ url: matchingUrls[0][0] });
+  } else {
+    showUrlSelection(matchingUrls);
+  }
+}
+
+function showUrlSelection(urls) {
+  const selectionDiv = document.getElementById('urlSelection');
+  selectionDiv.innerHTML = '';
+
+  urls.forEach((url, index) => {
+    const urlElement = document.createElement('div');
+    urlElement.className = 'url-item';
+    urlElement.innerHTML = `
+      <span class="url-icon">🔗</span>
+      <span class="url-text">${getDisplayUrl(url[0])}</span>
+    `;
+    urlElement.addEventListener('click', () => {
+      chrome.tabs.update({ url: url[0] });
+    });
+    selectionDiv.appendChild(urlElement);
+  });
+
+  selectionDiv.style.display = 'block';
+}
+
+function getDisplayUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname + urlObj.pathname;
+  } catch (e) {
+    return url;
+  }
+}
 
 /**
  * スプレッドシートから、選択範囲のデータを取得する

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>URL Shortener</title>
   <script src="popup/popup_focus.js"></script>
@@ -8,13 +7,33 @@
   <script src="popup/popup_save.js"></script>
   <script src="QRLibrary/qrcode.min.js"></script>
   <script src="qr.js"></script>
+  <style>
+    .url-item {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+    }
+    .url-item:hover {
+      background-color: #f0f0f0;
+    }
+    .url-icon {
+      margin-right: 5px;
+    }
+    .url-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
 </head>
-
 <body>
-  <input id="shortUrl1" type="text" placeholder="Enter short URL">
-  <button id="go">Go</button>
-  <button id="make">Make</button>
-  <button id="qrCode">QR</button>
-  <div id="qrcode"></div>
-  <script src="qr.js"></script>
+<input id="shortUrl1" type="text" placeholder="Enter short URL">
+<button id="go">Go</button>
+<button id="make">Make</button>
+<button id="qrCode">QR</button>
+<div id="qrcode"></div>
+<div id="urlSelection" style="display: none;"></div>
+<script src="qr.js"></script>
+</body>
 </html>
