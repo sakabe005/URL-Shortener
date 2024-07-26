@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('make').addEventListener('click', async function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
-    addContent(currentUrl, shortUrl);
+    await addContent(currentUrl, shortUrl);
     showUrls(currentUrl, shortUrl);
   });
 });
