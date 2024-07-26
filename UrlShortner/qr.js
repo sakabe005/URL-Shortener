@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (result[shortUrl]) {
         original_URL = result[shortUrl];
         document.getElementById('qrcode').textContent = '';
-        var qrcode = new QRCode(document.getElementById('qrcode'), {
+        new QRCode(document.getElementById('qrcode'), {
           text: original_URL,
           width: 128,
           height: 128,
