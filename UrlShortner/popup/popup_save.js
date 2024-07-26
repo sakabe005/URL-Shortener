@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('make').addEventListener('click', async function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
-    addContent(currentUrl, shortUrl);
+    await addContent(currentUrl, shortUrl);
     showUrls(currentUrl, shortUrl);
   });
 });
@@ -50,10 +50,11 @@ function saveUrlNum(id) {
  * @param {string} secondLineContent B列に追加する文字列
  */
 async function addContent(firstLineContent, secondLineContent) {
+  console.log('Adding row to spreadsheet');
   const token = await getAuthToken();
-
+  console.log('Token:', token);
   const spreadsheetId = await getSpreadSheetId();
-
+  console.log('Spreadsheet ID:', spreadsheetId);
   const range = `${defaultSheetName}!A:B`;  // データを追加する範囲
   const values = [
     [firstLineContent, secondLineContent]
@@ -62,7 +63,7 @@ async function addContent(firstLineContent, secondLineContent) {
   const body = {
     values: values
   };
-
+  console.log('Body:', body, 'Range:', range, "value:", values);
   const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW`, {
     method: 'POST',
     headers: {
@@ -71,7 +72,7 @@ async function addContent(firstLineContent, secondLineContent) {
     },
     body: JSON.stringify(body)
   });
-
+  console.log('Response:', response);
   if (!response.ok) {
     const errorDetails = await response.json();
     console.error('Error adding row to spreadsheet:', errorDetails);

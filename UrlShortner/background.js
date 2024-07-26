@@ -111,6 +111,7 @@ async function addContent(firstLineContent, secondLineContent) {
 
   const spreadsheetId = await getSpreadSheetId();
 
+
   const range = `${defaultSheetName}!A:B`;  // データを追加する範囲
   const values = [
     [firstLineContent, secondLineContent]
@@ -128,7 +129,6 @@ async function addContent(firstLineContent, secondLineContent) {
     },
     body: JSON.stringify(body)
   });
-
   if (!response.ok) {
     const errorDetails = await response.json();
     console.error('Error adding row to spreadsheet:', errorDetails);
