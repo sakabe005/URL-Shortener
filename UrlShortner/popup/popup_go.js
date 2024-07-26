@@ -41,7 +41,6 @@ function showUrlSelection(urls) {
     const urlElement = document.createElement('div');
     urlElement.className = 'url-item';
     urlElement.innerHTML = `
-      <span class="url-icon">🔗</span>
       <span class="url-text">${getDisplayUrl(url[0])}</span>
     `;
     urlElement.addEventListener('click', () => {
