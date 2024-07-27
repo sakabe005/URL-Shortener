@@ -29,8 +29,41 @@ async function getCurrentURL() {
  */
 function showUrls(originalUrl, shortUrl) {
   const html = `
-    <p>Original URL: ${originalUrl}</p>
-    <p>Short URL: ${shortUrl}</p>
+    <html>
+      <head>
+        <style>
+          body {
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+          .url-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          }
+          p {
+            margin: 10px 0;
+          }
+          .label {
+            font-weight: bold;
+            color: #333;
+          }
+          .url {
+            word-break: break-all;
+            color: #0066cc;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Short URL Created!</h2>
+        <div class="url-container">
+          <p><span class="label">Original URL :</span> <span class="url">${originalUrl}</span></p>
+          <p><span class="label">Short URL :</span> <span class="url">${shortUrl}</span></p>
+        </div>
+      </body>
+    </html>
   `;
   const url = "data:text/html," + encodeURIComponent(html);
   chrome.tabs.create({ url: url });
