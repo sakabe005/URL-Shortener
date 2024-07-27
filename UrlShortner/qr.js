@@ -1,23 +1,15 @@
-// "入力欄に短縮URLを入力しているときにQRボタンを押すと、元のURLのQRコードが作成される"
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('qrCode').addEventListener('click', function() {
-    const shortUrl = document.getElementById('shortUrl1').value;
-    chrome.storage.local.get([shortUrl], function(result) {
-      if (result[shortUrl]) {
-        original_URL = result[shortUrl];
-        document.getElementById('qrcode').textContent = '';
-        new QRCode(document.getElementById('qrcode'), {
-          text: original_URL,
-          width: 128,
-          height: 128,
-          correctLevel : QRCode.CorrectLevel.H,
-          colorDark : "#AE56E3",
-          colorLight : "#ffffff",
-        });
-      } else {
-        // なかった場合はURLがないと返す
-        alert('No Url');
-      }
+  // qrCodeCreateボタンのイベントリスナー
+  document.getElementById('qrCodeCreate').addEventListener('click', async function () {
+    const currentUrl = await getCurrentURL();
+    document.getElementById('qrcode').innerHTML = '';
+    var qrcode = new QRCode("qrcode", {
+      text: currentUrl,
+      width: 128,
+      height: 128,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
     });
   });
 });
