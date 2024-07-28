@@ -8,25 +8,6 @@
   <script src="popup/popup_save.js"></script>
   <script src="QRLibrary/qrcode.min.js"></script>
   <script src="qr.js"></script>
-  <style>
-    .url-item {
-      display: flex;
-      align-items: center;
-      padding: 5px;
-      cursor: pointer;
-    }
-    .url-item:hover {
-      background-color: #f0f0f0;
-    }
-    .url-icon {
-      margin-right: 5px;
-    }
-    .url-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -39,5 +20,6 @@
     <button id="qrCodeCreate" class="generate-qr-btn">Generate QR Code</button>
     <div id="qrcode" class="qr-container">
     </div>
+    <div id="urlSelection" style="display: none;"></div>
   </div>
 </html>
