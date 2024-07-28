@@ -33,11 +33,9 @@ function showUrlSelection(urls) {
   selectionDiv.innerHTML = '';
 
   urls.forEach((url, index) => {
-    const urlElement = document.createElement('div');
+    const urlElement = document.createElement('button');
     urlElement.className = 'url-item';
-    urlElement.innerHTML = `
-      <span class="url-text">${getDisplayUrl(url[0])}</span>
-    `;
+    urlElement.textContent = getDisplayUrl(url[0]);
     urlElement.addEventListener('click', () => {
       chrome.tabs.update({ url: url[0] });
     });
@@ -45,6 +43,10 @@ function showUrlSelection(urls) {
   });
 
   selectionDiv.style.display = 'block';
+
+  if (selectionDiv.firstChild) {
+    selectionDiv.firstChild.focus();
+  }
 }
 
 function getDisplayUrl(url) {
