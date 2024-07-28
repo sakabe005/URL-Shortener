@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>URL Shortener</title>
+  <title>LinkWiz</title>
+  <link rel="stylesheet" href="style.css">
   <script src="popup/popup_focus.js"></script>
   <script src="popup/popup_go.js"></script>
   <script src="popup/popup_save.js"></script>
   <script src="QRLibrary/qrcode.min.js"></script>
   <script src="qr.js"></script>
-  <title>LinkWiz</title>
-  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <div class="container">
     <h1 class="title">LinkWiz</h1>
@@ -23,5 +20,6 @@
     <button id="qrCodeCreate" class="generate-qr-btn">Generate QR Code</button>
     <div id="qrcode" class="qr-container">
     </div>
+    <div id="urlSelection" style="display: none;"></div>
   </div>
 </html>

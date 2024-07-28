@@ -82,3 +82,21 @@ body {
     height: 100px;
     margin-bottom: 10px;
 }
+
+.url-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+.url-item:hover {
+    background-color: #f0f0f0;
+}
+.url-icon {
+    margin-right: 5px;
+}
+.url-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
