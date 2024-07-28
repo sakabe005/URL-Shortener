@@ -29,8 +29,41 @@ async function getCurrentURL() {
  */
 function showUrls(originalUrl, shortUrl) {
   const html = `
-    <p>Original URL: ${originalUrl}</p>
-    <p>Short URL: ${shortUrl}</p>
+    <html>
+      <head>
+        <style>
+          body {
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+          .url-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          }
+          p {
+            margin: 10px 0;
+          }
+          .label {
+            font-weight: bold;
+            color: #333;
+          }
+          .url {
+            word-break: break-all;
+            color: #0066cc;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Short URL Created!</h2>
+        <div class="url-container">
+          <p><span class="label">Original URL :</span> <span class="url">${originalUrl}</span></p>
+          <p><span class="label">Short URL :</span> <span class="url">${shortUrl}</span></p>
+        </div>
+      </body>
+    </html>
   `;
   const url = "data:text/html," + encodeURIComponent(html);
   chrome.tabs.create({ url: url });
@@ -50,10 +83,11 @@ function saveUrlNum(id) {
  * @param {string} secondLineContent B列に追加する文字列
  */
 async function addContent(firstLineContent, secondLineContent) {
+  console.log('Adding row to spreadsheet');
   const token = await getAuthToken();
-
+  console.log('Token:', token);
   const spreadsheetId = await getSpreadSheetId();
-
+  console.log('Spreadsheet ID:', spreadsheetId);
   const range = `${defaultSheetName}!A:B`;  // データを追加する範囲
   const values = [
     [firstLineContent, secondLineContent]
@@ -62,7 +96,7 @@ async function addContent(firstLineContent, secondLineContent) {
   const body = {
     values: values
   };
-
+  console.log('Body:', body, 'Range:', range, "value:", values);
   const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW`, {
     method: 'POST',
     headers: {
@@ -71,7 +105,7 @@ async function addContent(firstLineContent, secondLineContent) {
     },
     body: JSON.stringify(body)
   });
-
+  console.log('Response:', response);
   if (!response.ok) {
     const errorDetails = await response.json();
     console.error('Error adding row to spreadsheet:', errorDetails);
