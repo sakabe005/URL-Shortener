@@ -5,11 +5,6 @@ const defaultSheetName = "URLs";
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('go').addEventListener('click', handleGoClick);
-  document.getElementById('shortUrl1').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      handleGoClick();
-    }
-  });
 });
 
 async function handleGoClick() {
