@@ -83,20 +83,26 @@ body {
     margin-bottom: 10px;
 }
 
+#urlSelection {
+    display: flex;
+    flex-direction: column;
+}
+
 .url-item {
+    width: 100%;
+    height: 28px;
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 4px;
     cursor: pointer;
-}
-.url-item:hover {
-    background-color: #f0f0f0;
-}
-.url-icon {
-    margin-right: 5px;
-}
-.url-text {
+    border: none;
+    background: none;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+}
+
+.url-item:hover, 
+.url-item:active,
+.url-item:focus {
+    background-color: #f0f0f0;
 }
