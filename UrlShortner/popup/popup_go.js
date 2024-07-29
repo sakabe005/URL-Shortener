@@ -5,11 +5,6 @@ const defaultSheetName = "URLs";
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('go').addEventListener('click', handleGoClick);
-  document.getElementById('shortUrl1').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      handleGoClick();
-    }
-  });
 });
 
 async function handleGoClick() {
@@ -38,11 +33,9 @@ function showUrlSelection(urls) {
   selectionDiv.innerHTML = '';
 
   urls.forEach((url, index) => {
-    const urlElement = document.createElement('div');
+    const urlElement = document.createElement('button');
     urlElement.className = 'url-item';
-    urlElement.innerHTML = `
-      <span class="url-text">${getDisplayUrl(url[0])}</span>
-    `;
+    urlElement.textContent = getDisplayUrl(url[0]);
     urlElement.addEventListener('click', () => {
       chrome.tabs.update({ url: url[0] });
     });
@@ -50,6 +43,10 @@ function showUrlSelection(urls) {
   });
 
   selectionDiv.style.display = 'block';
+
+  if (selectionDiv.firstChild) {
+    selectionDiv.firstChild.focus();
+  }
 }
 
 function getDisplayUrl(url) {
