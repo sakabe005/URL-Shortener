@@ -197,8 +197,6 @@ chrome.omnibox.onInputChanged.addListener(
       let for_suggest = [];
       for (let row of data) {
         if (row[1].includes(text)) { 
-          console.log(row[0]);
-          console.log(row[1]);
           for_suggest.push({content: row[0], description: row[1] + "  |  " + row[0]});  
         }
       }
@@ -214,7 +212,6 @@ chrome.omnibox.onInputChanged.addListener(
 */
 chrome.omnibox.onInputEntered.addListener(
   async function(text) {
-    console.log(text);
     chrome.tabs.update({ url: text });
     
 });
