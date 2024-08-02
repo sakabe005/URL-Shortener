@@ -3,7 +3,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: auto;
     margin: 0;
     background-color: rgba(255, 0, 0, 0);
 }
@@ -15,6 +15,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 300px;
+    height: auto;
 }
 
 .title {
@@ -30,7 +31,7 @@ body {
 }
 
 #shortUrl1 {
-    width: 150px;
+    width: 70%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
@@ -45,10 +46,12 @@ body {
     cursor: pointer;
     color: white;
     transition: background-color 0.3s;
+    width: 100%;
 }
 
 #go {
     border-radius: 0 5px 5px 0;
+    width: 30%;
 }
 
 #make {
@@ -69,6 +72,7 @@ body {
     cursor: pointer;
     color: white;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .qr-container {
@@ -101,8 +105,54 @@ body {
     overflow: hidden;
 }
 
-.url-item:hover, 
+.url-item:hover,
 .url-item:active,
 .url-item:focus {
     background-color: #f0f0f0;
+}
+
+.tab-group {
+    margin-top: 20px;
+    width: 100%;
+    list-style: none;
+    text-align: center;
+}
+
+.tab-button {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-button .is-active {
+    background: #7e57c2;
+    color: #f0f0f0;
+}
+
+.tab {
+    width: 50%;
+    border: 2px solid #7e57c2;
+    padding: 8px;
+    border-bottom: none;
+}
+
+.tab-contents {
+    border-top: 2px solid #7e57c2;
+    background: #f0f0f0;
+}
+
+.content {
+    display: none;
+    padding: 16px;
+    text-align: left;
+    background-color: rgba(126, 87, 194, 0.1);
+}
+
+.content.is-display {
+    display: block;
+    border: 2px solid #7e57c2;
 }
