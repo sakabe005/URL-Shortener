@@ -47,9 +47,8 @@ const handleClickDeleteSpreadsheet = async (event) => {
     const spreadsheetIdToDelete = spreadsheetDiv.getAttribute('data-id');
     const spreadsheets = await getSpreadsheets();
     const deletedSpreadsheets = spreadsheets.filter((spreadsheet) => spreadsheet.spreadsheetId !== spreadsheetIdToDelete);
-    await chrome.storage.sync.set({ spreadsheets: deletedSpreadsheets }, () => {
-        chrome.runtime.sendMessage({ action: "reloadPopup" });
-    });
+    await chrome.storage.sync.set({ spreadsheets: deletedSpreadsheets });
+    window.location.reload()
 };
 
 const handleClickCancelButton = () => {
@@ -71,8 +70,7 @@ const handleSubmitOkButton = async () => {
     const spreadsheetId = spreadsheetUrl.split("/")[5];
     const spreadsheets = await getSpreadsheets();
     const addedSpreadsheets = [...spreadsheets, { spreadsheetId, spreadsheetName: displayName }];
-    await chrome.storage.sync.set({ spreadsheets: addedSpreadsheets }, () => {
-        chrome.runtime.sendMessage({ action: "reloadPopup" });
-    });
+    await chrome.storage.sync.set({ spreadsheets: addedSpreadsheets });
+    window.location.reload()
     form.reset();
 };
