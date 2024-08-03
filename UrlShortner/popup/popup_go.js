@@ -66,21 +66,74 @@ function getDisplayUrl(url) {
 const getSpreadsheetData = async (range) => {
   const token = await getAuthToken();
 
-  const spreadsheetId = await getSpreadSheetId();
-  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?majorDimension=ROWS`, {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + token,
-      'Content-Type': 'application/json'
+  const spreadsheets = await getSpreadsheets();
+
+  const res = [];
+
+  const fetchSpreadsheet = async (spreadsheetId) => {
+    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?majorDimension=ROWS`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errorDetails = await response.json();
+      console.error('Error fetching spreadsheet data:', errorDetails);
+      return null;
     }
+
+    const data = await response.json();
+    const values =data.values
+
+    if (!Array.isArray(values)) {
+      console.error(data)
+      throw new Error("invalid response")
+    }
+    res.push(...values);
+  };
+
+  await Promise.all(spreadsheets.map(async(spreadsheet) => fetchSpreadsheet(spreadsheet.spreadsheetId)));
+
+  return res
+};
+
+/**
+ * スプレッドシートAPIを叩くためのtokenを取得する
+ * @returns {Promise<string>}
+ */
+const getAuthToken = async () => {
+  let token = "";
+  await new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, function (res) {
+      if (chrome.runtime.lastError) {
+        console.error("エラー:", chrome.runtime.lastError.message);
+        reject(chrome.runtime.lastError);
+        return;
+      }
+      if (!res) {
+        console.error('token is missing.');
+        reject('token is missing.');
+        return;
+      }
+      token = res;
+      resolve(res);
+    });
   });
+  return token;
+};
 
-  if (!response.ok) {
-    const errorDetails = await response.json();
-    console.error('Error fetching spreadsheet data:', errorDetails);
-    return null;
+/**
+ * Googleアカウントに紐づけられたストレージから、URL Shortenerのスプレッドシートをを取得する
+ * @returns {Promise<{spreadsheetId:string,spreadsheetName:string}[]>}
+ */
+const getSpreadsheets = async () => {
+  const res = (await chrome.storage.sync.get('spreadsheets'));
+  if (!res) {
+    console.error('Spreadsheet ID is missing.');
+    return "";
   }
-
-  const data = await response.json();
-  return data.values;
+  return res.spreadsheets;
 };

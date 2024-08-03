@@ -8,6 +8,20 @@ body {
     background-color: rgba(255, 0, 0, 0);
 }
 
+button {
+    background-color: #7e57c2;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #5e3ea2;
+}
+
 .container {
     text-align: center;
     background-color: #fff;
@@ -37,37 +51,16 @@ body {
     outline: none;
 }
 
-#go,
-#make {
-    background-color: #7e57c2;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    color: white;
-    transition: background-color 0.3s;
-}
-
 #go {
     border-radius: 0 5px 5px 0;
 }
 
 #make {
-    border-radius: 5px;
     margin-left: 10px;
 }
 
-#go:hover,
-#make:hover {
-    background-color: #5e3ea2;
-}
-
 .generate-qr-btn {
-    background-color: #7e57c2;
-    border: none;
     padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
     margin-bottom: 20px;
 }
 
@@ -101,8 +94,70 @@ body {
     overflow: hidden;
 }
 
-.url-item:hover, 
+.url-item:hover,
 .url-item:active,
 .url-item:focus {
     background-color: #f0f0f0;
+}
+
+.url-management {
+    text-align: left;
+    margin: 2px 4px;
+}
+
+.spreadsheet {
+    border-bottom: 1px solid #333;
+    height: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spreadsheet-container {
+    display: flex;
+    gap: 0.5rem;
+    margin: auto 0;
+    align-items: center;
+}
+
+.spreadsheet-img {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.form-item {
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-spreadsheet {
+    margin: 1rem 0 0 0;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 2rem;
+}
+
+.delete-btn {
+    height: 1.5rem;
+    margin: 0 4px;
+    background-color: #eb2525;
+    display: flex;
+    align-items: center;
+}
+
+.delete-btn:hover {
+    background-color: #c60606;
+}
+
+#cancel-btn {
+    background-color: rgb(231, 231, 231);
+    border: #333;
+    color: #333;
+}
+
+#cancel-btn:hover {
+    background-color: rgb(210, 207, 207);
 }
