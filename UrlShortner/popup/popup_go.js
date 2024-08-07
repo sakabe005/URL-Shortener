@@ -66,7 +66,7 @@ function getDisplayUrl(url) {
 const getSpreadsheetData = async (range) => {
   const token = await getAuthToken();
 
-  const spreadsheets = await getSpreadsheets();
+  const spreadsheets = await getSpreadsheetsInPopUp();
 
   const res = [];
 
@@ -129,7 +129,7 @@ const getAuthToken = async () => {
  * Googleアカウントに紐づけられたストレージから、URL Shortenerのスプレッドシートをを取得する
  * @returns {Promise<{spreadsheetId:string,spreadsheetName:string}[]>}
  */
-const getSpreadsheets = async () => {
+const getSpreadsheetsInPopUp = async () => {
   const res = (await chrome.storage.sync.get('spreadsheets'));
   if (!res) {
     console.error('Spreadsheet ID is missing.');

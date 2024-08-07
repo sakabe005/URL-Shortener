@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const shortUrl = document.getElementById('shortUrl1').value;
 
     const token = await getAuthToken()
-    const spreadsheets = await getSpreadsheets()
+    const spreadsheets = await getSpreadsheetsInPopUp()
 
     if (spreadsheets.length === 0) {
       console.error("sync storage is invalid")

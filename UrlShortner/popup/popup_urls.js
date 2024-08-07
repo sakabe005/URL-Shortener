@@ -1,6 +1,6 @@
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
 document.addEventListener('DOMContentLoaded', async function () {
-    const spreadsheetData = await getSpreadsheets();
+    const spreadsheetData = await getSpreadsheetsInPopUp();
     const spreadsheetDiv = document.getElementById("spreadsheets");
     spreadsheetDiv.innerHTML = `${spreadsheetData.map((spreadsheet, i) => (
         `<div class="spreadsheet" data-id="${spreadsheet.spreadsheetId}" style="${i === 0 ? 'border-top: 1px solid #333;' : ''}">
@@ -45,7 +45,7 @@ const handleClickDeleteSpreadsheet = async (event) => {
     if (!spreadsheetDiv) return;
 
     const spreadsheetIdToDelete = spreadsheetDiv.getAttribute('data-id');
-    const spreadsheets = await getSpreadsheets();
+    const spreadsheets = await getSpreadsheetsInPopUp();
     const deletedSpreadsheets = spreadsheets.filter((spreadsheet) => spreadsheet.spreadsheetId !== spreadsheetIdToDelete);
     await chrome.storage.sync.set({ spreadsheets: deletedSpreadsheets });
     window.location.reload()
@@ -68,7 +68,7 @@ const handleSubmitOkButton = async () => {
     const displayName = document.getElementById('displayName').value;
 
     const spreadsheetId = spreadsheetUrl.split("/")[5]; // https://docs.google.com/spreadsheets/d/{id}/～ の形式
-    const spreadsheets = await getSpreadsheets();
+    const spreadsheets = await getSpreadsheetsInPopUp();
     const addedSpreadsheets = [...spreadsheets, { spreadsheetId, spreadsheetName: displayName }];
     await chrome.storage.sync.set({ spreadsheets: addedSpreadsheets });
     window.location.reload()
