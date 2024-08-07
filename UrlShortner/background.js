@@ -61,15 +61,6 @@ chrome.runtime.onInstalled.addListener(async () => {
   await addContent(spreadsheetId, token, "original URL", "short URL");
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === "reloadPopup") {
-    console.log(request)
-    chrome.action.setPopup({popup: ''}, function() {
-      chrome.action.setPopup({popup: 'popup.html'});
-    });
-  }
-});
-
 /**
  * Googleアカウントに紐づけられたストレージから、URL Shortenerのスプレッドシートをを取得する
  * @returns {Promise<{spreadsheetId:string,spreadsheetName:string}[]>}
