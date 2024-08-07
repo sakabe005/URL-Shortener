@@ -28,7 +28,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
 
     const shortUrl = id.toString();
 
-    const spreadsheets = await getSpreadSheets();
+    const spreadsheets = await getSpreadsheets();
 
     if (spreadsheets.length === 0) {
       throw new Error("invalid sync storage")
@@ -65,7 +65,7 @@ chrome.runtime.onInstalled.addListener(async () => {
  * Googleアカウントに紐づけられたストレージから、URL Shortenerのスプレッドシートをを取得する
  * @returns {Promise<{spreadsheetId:string,spreadsheetName:string}[]>}
  */
-const getSpreadSheets = async () => {
+const getSpreadsheets = async () => {
   const res = (await chrome.storage.sync.get('spreadsheets'));
   console.log(res)
   if (!res) {
@@ -303,7 +303,7 @@ chrome.omnibox.onInputEntered.addListener(
 const getSpreadsheetData = async (range) => {
   const token = await getAuthToken();
 
-  const spreadsheets = await getSpreadSheets();
+  const spreadsheets = await getSpreadsheets();
 
   const res = [];
 
