@@ -60,10 +60,6 @@ const handleClickCancelButton = () => {
 
 const handleSubmitOkButton = async () => {
     const form = document.getElementById("spreadsheet-form");
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
     const spreadsheetUrl = document.getElementById("spreadsheetUrl").value;
     const displayName = document.getElementById('displayName').value;
 
