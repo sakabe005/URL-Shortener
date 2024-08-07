@@ -67,7 +67,7 @@ const handleSubmitOkButton = async () => {
     const spreadsheetUrl = document.getElementById("spreadsheetUrl").value;
     const displayName = document.getElementById('displayName').value;
 
-    const spreadsheetId = spreadsheetUrl.split("/")[5];
+    const spreadsheetId = spreadsheetUrl.split("/")[5]; // https://docs.google.com/spreadsheets/d/{id}/～ の形式
     const spreadsheets = await getSpreadsheets();
     const addedSpreadsheets = [...spreadsheets, { spreadsheetId, spreadsheetName: displayName }];
     await chrome.storage.sync.set({ spreadsheets: addedSpreadsheets });
