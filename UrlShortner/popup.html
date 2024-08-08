@@ -5,10 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinkWiz</title>
+  <meta charset="UTF-8">
   <link rel="stylesheet" href="style.css">
   <script src="popup/popup_focus.js"></script>
   <script src="popup/popup_go.js"></script>
   <script src="popup/popup_save.js"></script>
+  <script src="popup/popup_urls.js"></script>
   <script src="QRLibrary/qrcode.min.js"></script>
   <script src="qr.js"></script>
   <script src="tab.js"></script>
@@ -30,13 +32,33 @@
           <button id="go">GO</button>
         </div>
         <button id="make">Make</button>
+        <div id="urlSelection" style="display: none;"></div>
+        <div class="url-management">
+          <h3 class="url-management-title">URL management</h3>
+          <div id="spreadsheets"></div>
+          <form style="display: none;" id="spreadsheet-form">
+            <div class="form-item">
+              <span>New Spreadsheet URL</span>
+              <input id="spreadsheetUrl" placeholder="ex)https://docs.google.com/spreadsheets/d/～" required
+                pattern="https:\/\/docs\.google\.com\/spreadsheets\/d\/.+">
+            </div>
+            <div class="form-item">
+              <span>Display Name</span>
+              <input id="displayName" placeholder="ex)Aさんから共有されたスプレッドシート" required>
+            </div>
+            <div class="form-buttons">
+              <button type="submit" class="add-spreadsheet" id="ok-btn">OK</button>
+              <button type="button" class="add-spreadsheet" id="cancel-btn">cancel</button>
+            </div>
+          </form>
+          <button type="button" class="add-spreadsheet" id="add-spreadsheet">+ Add spreadsheet</button>
+        </div>
       </div>
       <div class="content tab-02">
         <button id="qrCodeCreate" class="generate-qr-btn">Generate QR Code</button>
         <div id="qrcode" class="qr-container"></div>
       </div>
     </div>
-    <div id="urlSelection" style="display: none;"></div>
   </div>
 </body>
 

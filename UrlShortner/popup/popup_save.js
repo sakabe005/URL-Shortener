@@ -5,18 +5,27 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('make').addEventListener('click', async function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
-    await addContent(currentUrl, shortUrl);
+
+    const token = await getAuthToken()
+    const spreadsheets = await getSpreadsheetsInPopUp()
+
+    if (spreadsheets.length === 0) {
+      console.error("sync storage is invalid")
+    }
+
+    const defaultSheetId = spreadsheets[0].spreadsheetId
+
+    await addContent(defaultSheetId,token,currentUrl, shortUrl);
     showUrls(currentUrl, shortUrl);
   });
 });
 
 // 今現在のURLを確認して保存する。
 async function getCurrentURL() {
-  let currentUrl = "";
   return await new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const currentTab = tabs[0]; // 現在のタブを取得
-      currentUrl = currentTab.url; // 現在のタブのURLを取得
+      const currentUrl = currentTab.url; // 現在のタブのURLを取得
       resolve(currentUrl);
     });
   });
@@ -79,15 +88,12 @@ function saveUrlNum(id) {
 
 /**
  * A,B列に要素を追加することは前提とする
+ * @param {string} spreadsheetId 要素を追加するスプレッドシートのID
+ * @param {string} token スプレッドシートAPIを叩くためのtoken
  * @param {string} firstLineContent A列に追加する文字列
  * @param {string} secondLineContent B列に追加する文字列
  */
-async function addContent(firstLineContent, secondLineContent) {
-  console.log('Adding row to spreadsheet');
-  const token = await getAuthToken();
-  console.log('Token:', token);
-  const spreadsheetId = await getSpreadSheetId();
-  console.log('Spreadsheet ID:', spreadsheetId);
+async function addContent(spreadsheetId, token, firstLineContent, secondLineContent) {
   const range = `${defaultSheetName}!A:B`;  // データを追加する範囲
   const values = [
     [firstLineContent, secondLineContent]
@@ -96,7 +102,7 @@ async function addContent(firstLineContent, secondLineContent) {
   const body = {
     values: values
   };
-  console.log('Body:', body, 'Range:', range, "value:", values);
+
   const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW`, {
     method: 'POST',
     headers: {
@@ -105,7 +111,6 @@ async function addContent(firstLineContent, secondLineContent) {
     },
     body: JSON.stringify(body)
   });
-  console.log('Response:', response);
   if (!response.ok) {
     const errorDetails = await response.json();
     console.error('Error adding row to spreadsheet:', errorDetails);
@@ -114,41 +119,3 @@ async function addContent(firstLineContent, secondLineContent) {
 
   console.log('Row added to spreadsheet');
 }
-
-/**
- * スプレッドシートAPIを叩くためのtokenを取得する
- * @returns {Promise<string>}
- */
-const getAuthToken = async () => {
-  let token = "";
-  await new Promise((resolve, reject) => {
-    chrome.identity.getAuthToken({ interactive: true }, function (res) {
-      if (chrome.runtime.lastError) {
-        console.error("エラー:", chrome.runtime.lastError.message);
-        reject(chrome.runtime.lastError);
-        return;
-      }
-      if (!res) {
-        console.error('token is missing.');
-        reject('token is missing.');
-        return;
-      }
-      token = res;
-      resolve(res);
-    });
-  });
-  return token;
-};
-
-/**
- * Googleアカウントに紐づけられたストレージから、URL ShortenerのスプレッドシートのIDを取得する
- * @returns {Promise<string>}
- */
-const getSpreadSheetId = async () => {
-  const res = (await chrome.storage.sync.get('spreadsheetId'))['spreadsheetId'];
-  if (!res) {
-    console.error('Spreadsheet ID is missing.');
-    return "";
-  }
-  return res;
-};
