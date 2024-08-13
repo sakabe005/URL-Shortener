@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function handleGoClick() {
   const shortUrl = document.getElementById('shortUrl1').value;
-  const range = `${defaultSheetName}!A:B`;  // データを取得する範囲
+  const range = `${defaultSheetName}!A:Z`;  // データを取得する範囲
 
   const data = await getSpreadsheetData(range);
   if (!data) {
@@ -22,6 +22,7 @@ async function handleGoClick() {
   if (matchingUrls.length === 0) {
     alert('No URL found');
   } else if (matchingUrls.length === 1) {
+    await incrementUserCount(matchingUrls[0]);
     chrome.tabs.update({ url: matchingUrls[0][0] });
   } else {
     showUrlSelection(matchingUrls);
@@ -36,7 +37,8 @@ function showUrlSelection(urls) {
     const urlElement = document.createElement('button');
     urlElement.className = 'url-item';
     urlElement.textContent = getDisplayUrl(url[0]);
-    urlElement.addEventListener('click', () => {
+    urlElement.addEventListener('click', async () => {
+      await incrementUserCount(url);
       chrome.tabs.update({ url: url[0] });
     });
     selectionDiv.appendChild(urlElement);
@@ -86,7 +88,7 @@ const getSpreadsheetData = async (range) => {
     }
 
     const data = await response.json();
-    const values =data.values
+    const values = data.values
 
     if (!Array.isArray(values)) {
       console.error(data)
@@ -137,3 +139,107 @@ const getSpreadsheetsInPopUp = async () => {
   }
   return res.spreadsheets;
 };
+
+/**
+ * ユーザーごとのカウントを増加させる
+ * @param {string[]} row スプレッドシートの行データ
+ */
+async function incrementUserCount(row) {
+  if (!Array.isArray(row) || row.length < 2) {
+    console.error('Invalid row data');
+    return;
+  }
+
+  const token = await getAuthToken();
+  const userName = await getUserName(token);
+  const spreadsheets = await getSpreadsheetsInPopUp();
+
+  if (!spreadsheets || spreadsheets.length === 0) {
+    console.error('No spreadsheets found');
+    return;
+  }
+
+  const spreadsheetId = spreadsheets[0].spreadsheetId;
+
+  // ヘッダー行を取得
+  const headerResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${defaultSheetName}!1:1`, {
+    headers: {
+      'Authorization': 'Bearer ' + token,
+    }
+  });
+  const headerData = await headerResponse.json();
+
+  if (!headerData.values || !Array.isArray(headerData.values[0])) {
+    console.error('Invalid header data');
+    return;
+  }
+
+  const headers = headerData.values[0];
+
+  // ユーザー名の列のインデックスを見つける
+  const userColumnIndex = headers.indexOf(userName);
+  if (userColumnIndex === -1) {
+    console.error('User column not found');
+    return;
+  }
+
+  // 現在の行を取得
+  const shortUrl = row[1]; // 短縮URLは2番目の要素（インデックス1）にあると仮定
+  const allDataResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${defaultSheetName}!A:Z`, {
+    headers: {
+      'Authorization': 'Bearer ' + token,
+    }
+  });
+  const allData = await allDataResponse.json();
+
+  if (!allData.values || !Array.isArray(allData.values)) {
+    console.error('Invalid spreadsheet data');
+    return;
+  }
+
+  const rowIndex = allData.values.findIndex(row => row[1] === shortUrl);
+  if (rowIndex === -1) {
+    console.error('Row not found');
+    return;
+  }
+
+  const currentRow = allData.values[rowIndex];
+
+  // カウントを増加
+  const currentCount = parseInt(currentRow[userColumnIndex]) || 0;
+  const newCount = currentCount + 1;
+
+  // 更新された行を送信
+  const updateRange = `${defaultSheetName}!${String.fromCharCode(65 + userColumnIndex)}${rowIndex + 1}`; // +1 because sheet rows are 1-indexed
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${updateRange}?valueInputOption=RAW`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      values: [[newCount]]
+    })
+  });
+}
+
+/**
+ * ログインしているユーザーの名前を取得する
+ * @param {string} token Google APIを叩くためのtoken
+ * @returns {Promise<string>} ユーザー名
+ */
+async function getUserName(token) {
+  const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    console.error('Error fetching user info');
+    return 'Unknown User';
+  }
+
+  const data = await response.json();
+  return data.name || 'Unknown User';
+}
