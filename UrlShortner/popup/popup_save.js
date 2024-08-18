@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const defaultSheetId = spreadsheets[0].spreadsheetId
 
-    await addContent(defaultSheetId,token,currentUrl, shortUrl);
+    const userName = await getUserName(token);
+    await addContent(defaultSheetId, token, currentUrl, shortUrl, userName);
     showUrls(currentUrl, shortUrl);
   });
 });
@@ -87,16 +88,17 @@ function saveUrlNum(id) {
 }
 
 /**
- * A,B列に要素を追加することは前提とする
+ * A,B,C列に要素を追加し、必要に応じて新しい列を追加する
  * @param {string} spreadsheetId 要素を追加するスプレッドシートのID
  * @param {string} token スプレッドシートAPIを叩くためのtoken
- * @param {string} firstLineContent A列に追加する文字列
- * @param {string} secondLineContent B列に追加する文字列
+ * @param {string} originalUrl A列に追加する文字列
+ * @param {string} shortUrl B列に追加する文字列
+ * @param {string} userName C列に追加する文字列、また新しい列の名前
  */
-async function addContent(spreadsheetId, token, firstLineContent, secondLineContent) {
-  const range = `${defaultSheetName}!A:B`;  // データを追加する範囲
+async function addContent(spreadsheetId, token, originalUrl, shortUrl, userName) {
+  const range = `${defaultSheetName}!A:C`;  // データを追加する範囲
   const values = [
-    [firstLineContent, secondLineContent]
+    [originalUrl, shortUrl, userName]
   ];
 
   const body = {
@@ -118,4 +120,77 @@ async function addContent(spreadsheetId, token, firstLineContent, secondLineCont
   }
 
   console.log('Row added to spreadsheet');
+
+  // ユーザー名の列が存在しない場合、新しい列を追加
+  await addUserColumnIfNotExists(spreadsheetId, token, userName);
+}
+
+/**
+ * ユーザー名の列が存在しない場合、新しい列を追加する
+ * @param {string} spreadsheetId スプレッドシートのID
+ * @param {string} token スプレッドシートAPIを叩くためのtoken
+ * @param {string} userName 追加する列の名前
+ */
+async function addUserColumnIfNotExists(spreadsheetId, token, userName) {
+  const range = `${defaultSheetName}!1:1`;  // ヘッダー行を取得
+
+  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    const errorDetails = await response.json();
+    console.error('Error fetching spreadsheet headers:', errorDetails);
+    return;
+  }
+
+  const data = await response.json();
+  const headers = data.values[0];
+
+  if (!headers.includes(userName)) {
+    // ユーザー名の列が存在しない場合、新しい列を追加
+    const newColumnLetter = String.fromCharCode(65 + headers.length); // A, B, C, ... の次の文字
+    const updateRange = `${defaultSheetName}!${newColumnLetter}1`;
+
+    const updateResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${updateRange}?valueInputOption=RAW`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        values: [[userName]]
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const errorDetails = await updateResponse.json();
+      console.error('Error adding new column:', errorDetails);
+    }
+  }
+}
+
+/**
+ * ログインしているユーザーの名前を取得する
+ * @param {string} token Google APIを叩くためのtoken
+ * @returns {Promise<string>} ユーザー名
+ */
+async function getUserName(token) {
+  const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    console.error('Error fetching user info');
+    return 'Unknown User';
+  }
+
+  const data = await response.json();
+  return data.name || 'Unknown User';
 }
