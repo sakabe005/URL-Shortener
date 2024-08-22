@@ -3,9 +3,24 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: auto;
     margin: 0;
     background-color: rgba(255, 0, 0, 0);
+}
+
+button {
+    background-color: #7e57c2;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #5e3ea2;
 }
 
 .container {
@@ -15,6 +30,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 300px;
+    height: auto;
 }
 
 .title {
@@ -30,45 +46,26 @@ body {
 }
 
 #shortUrl1 {
-    width: 150px;
+    width: 70%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
     outline: none;
 }
 
-#go,
-#make {
-    background-color: #7e57c2;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    color: white;
-    transition: background-color 0.3s;
-}
-
 #go {
     border-radius: 0 5px 5px 0;
+    width: 30%;
 }
 
 #make {
-    border-radius: 5px;
     margin-left: 10px;
 }
 
-#go:hover,
-#make:hover {
-    background-color: #5e3ea2;
-}
-
 .generate-qr-btn {
-    background-color: #7e57c2;
-    border: none;
     padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .qr-container {
@@ -101,8 +98,117 @@ body {
     overflow: hidden;
 }
 
-.url-item:hover, 
+.url-item:hover,
 .url-item:active,
 .url-item:focus {
     background-color: #f0f0f0;
+}
+
+.url-management {
+    text-align: left;
+    margin: 2px 4px;
+}
+
+.spreadsheet {
+    border-bottom: 1px solid #333;
+    height: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spreadsheet-container {
+    display: flex;
+    gap: 0.5rem;
+    margin: auto 0;
+    align-items: center;
+}
+
+.spreadsheet-img {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.form-item {
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-spreadsheet {
+    margin: 1rem 0 0 0;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 2rem;
+}
+
+.delete-btn {
+    height: 1.5rem;
+    margin: 0 4px;
+    background-color: #eb2525;
+    display: flex;
+    align-items: center;
+    width: min-content;
+}
+
+.delete-btn:hover {
+    background-color: #c60606;
+}
+
+#cancel-btn {
+    background-color: rgb(231, 231, 231);
+    border: #333;
+    color: #333;
+}
+
+#cancel-btn:hover {
+    background-color: rgb(210, 207, 207);
+}
+
+.tab-group {
+    margin-top: 20px;
+    width: 100%;
+    list-style: none;
+    text-align: center;
+}
+
+.tab-button {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-button .is-active {
+    background: #7e57c2;
+    color: #f0f0f0;
+}
+
+.tab {
+    width: 50%;
+    border: 2px solid #7e57c2;
+    padding: 8px;
+    border-bottom: none;
+}
+
+.tab-contents {
+    border-top: 2px solid #7e57c2;
+    background: #f0f0f0;
+}
+
+.content {
+    display: none;
+    padding: 16px;
+    text-align: left;
+    background-color: rgba(126, 87, 194, 0.1);
+}
+
+.content.is-display {
+    display: block;
+    border: 2px solid #7e57c2;
 }
