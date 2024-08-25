@@ -12,6 +12,15 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "getTabGroups") {
+    chrome.tabGroups.query({}, (groups) => {
+      sendResponse(groups);
+    });
+    return true;
+  }
+});
+
 // 項目が押されたら起動する関数
 chrome.contextMenus.onClicked.addListener(async (info) => {
   if (info.menuItemId === "UrlShortener") {
