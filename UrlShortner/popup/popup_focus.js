@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('keydown', handleUrlSelectionKeyDown);
 });
 
-function handleKeyDown(event) {
+export function handleKeyDown(event) {
   if (event.isComposing) return;
 
   if (event.key === 'Enter') {
