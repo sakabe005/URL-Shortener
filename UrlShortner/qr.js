@@ -12,11 +12,27 @@ document.addEventListener('DOMContentLoaded', function() {
       correctLevel : QRCode.CorrectLevel.H
     });
 
-    // URLをクリップボードにコピー
-    await navigator.clipboard.writeText(currentUrl);
+    setTimeout(async () => {
+      const qrCodeElement = document.getElementById('qrcode').querySelector('img');
 
-    // ポップアップ通知を表示
-    showNotification('URL copied to clipboard.');
+      const canvas = document.createElement('canvas');
+      canvas.width = qrCodeElement.width;
+      canvas.height = qrCodeElement.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(qrCodeElement, 0, 0, qrCodeElement.width, qrCodeElement.height);
+
+      canvas.toBlob(async (blob) => {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showNotification('QR code image copied to clipboard.');
+        } catch (err) {
+          console.error('Failed to copy QR code image: ', err);
+          showNotification('Failed to copy QR code image.');
+        }
+      }, 'image/png');
+    }, 100);
   });
 });
 
