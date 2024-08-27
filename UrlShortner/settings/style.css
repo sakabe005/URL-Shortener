@@ -115,10 +115,14 @@ h1 {
 
 .title {
     text-align: left;
-    margin: 4px 24px;
+    margin: 0px 24px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#add-spreadsheet {
+    margin: auto 0px;
 }
 
 .table-container {

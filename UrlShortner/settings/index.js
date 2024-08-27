@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     spreadsheetTable.innerHTML = "";
     spreadsheetData.forEach((spreadsheet, i) => {
         const row = document.createElement('tr');
-        const sharedTime = spreadsheet.sharedWithMeTime == null ? "自分のシート" : convertRFC3339ToDateTime(spreadsheet.sharedWithMeTime);
+        const sharedTime = spreadsheet.sharedWithMeTime == null ? "my sheet" : convertRFC3339ToDateTime(spreadsheet.sharedWithMeTime);
         row.innerHTML = `
                 <td>
                     <div class="spreadsheet-container">
@@ -56,23 +56,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </td>
                 <td>
                     <div class="profile">
-                        <img class="profile-img" src=${spreadsheet.owners[0].photoLink} alt="プロフィール画像" />
+                        <img class="profile-img" src=${spreadsheet.owners[0].photoLink} alt="profile image" />
                         <span>${spreadsheet.owners[0].displayName}</span>
                     </div>
                 </td>
                 <td>${sharedTime}</td>
                 <td>
                     <div class="action-container">
-                        <img class="three-point-reader" src="../static/three-point-reader.png" alt="アクション" />
+                        <img class="three-point-reader" src="../static/three-point-reader.png" alt="action" />
                         <div class="modal">
                             <div>
                                 <div class="modal-content">
-                                    <img class="icon" src="../static/edit.png" alt="編集" />
-                                    <button class="rename-btn">名前を変更</button>
+                                    <img class="icon" src="../static/edit.png" alt="edit" />
+                                    <button class="rename-btn">edit name</button>
                                 </div>
                                 <div class="modal-content" style="${i === 0 ? 'display:none;' : ''}">
-                                    <img class="icon" src="../static/trash.png" alt="ゴミ箱" />
-                                    <button class="delete-btn">削除</button>
+                                    <img class="icon" src="../static/trash.png" alt="trash" />
+                                    <button class="delete-btn">delete</button>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  */
 const switchManagementPageDisplay = (type) => {
     const form = document.getElementById("spreadsheet-add");
-    const management = document.getElementById("url-management");
+    const management = document.getElementById("spreadsheets");
     form.style.display = type === "form" ? "block" : "none";
     management.style.display = type === "form" ? "none" : "block";
 };
@@ -202,7 +202,7 @@ const handleSubmitOkButton = async () => {
     const spreadsheets = await getSpreadsheetsInSettings();
     for (let i = 0; i < spreadsheets.length; i++) {
         if (spreadsheets[i].spreadsheetId === spreadsheetId) {
-            errorMessageElement.innerText = "既に登録しているスプレッドシートです。";
+            errorMessageElement.innerText = "This spreadsheet is already registered.";
             return;
         }
     }
@@ -218,7 +218,7 @@ const handleSubmitOkButton = async () => {
     });
 
     if (!response.ok && response.status === 404) {
-        errorMessageElement.innerText = "スプレッドシートへのアクセス権がありません";
+        errorMessageElement.innerText = "You do not have access to this spreadsheet.";
         return;
     }
 
@@ -246,7 +246,7 @@ const handleRenameSpreadsheet = async (event) => {
     event.stopPropagation();
     const row = event.target.closest('tr');
     const spreadsheetId = row.getAttribute('data-id');
-    const newName = prompt("新しい名前を入力してください：");
+    const newName = prompt("Please enter a new name ：");
     if (newName) {
         const spreadsheets = await getSpreadsheetsInSettings();
         const updatedSpreadsheets = spreadsheets.map(sheet =>
@@ -261,7 +261,7 @@ const handleDeleteSpreadsheet = async (event) => {
     event.stopPropagation();
     const row = event.target.closest('tr');
     const spreadsheetId = row.getAttribute('data-id');
-    if (confirm("本当に削除しますか？")) {
+    if (confirm("Are you sure you want to delete this?")) {
         const spreadsheets = await getSpreadsheetsInSettings();
         const updatedSpreadsheets = spreadsheets.filter(sheet => sheet.spreadsheetId !== spreadsheetId);
         await chrome.storage.sync.set({ spreadsheets: updatedSpreadsheets });

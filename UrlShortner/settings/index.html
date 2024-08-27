@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkWiz - 一般設定</title>
+    <title>LinkWiz - Settings</title>
     <link rel="stylesheet" href="style.css">
     <script src="index.js"></script>
 </head>
@@ -20,6 +20,7 @@
                 <nav>
                     <ul>
                         <li class="active">
+                            <!-- staticに置くとactive時のcssが効かないため、直書き -->
                             <svg class="icon" id="Outline" xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                                 viewBox="0 0 40 40">
                                 <defs>
@@ -39,7 +40,7 @@
                                     <rect class="cls-1" width="40" height="40" />
                                 </g>
                             </svg>
-                            <i class="icon-settings"></i>一般設定
+                            <i class="icon-settings"></i>Settings
                         </li>
                     </ul>
                 </nav>
@@ -47,23 +48,23 @@
         </aside>
         <main>
             <div class="content">
-                <h1>一般設定</h1>
+                <h1>Settings</h1>
                 <div class="tabs">
-                    <button class="tab active" id="spreadsheet-management">スプレッドシート管理</button>
+                    <button class="tab active" id="spreadsheet-management">Spreadsheet Management</button>
                 </div>
                 <div class="tab-content">
-                    <div id="url-management">
+                    <div id="spreadsheets">
                         <div class="title">
-                            <h2 class="url-management-title">URL management</h2>
-                            <button type="button" class="primary-btn" id="add-spreadsheet">+ 追加</button>
+                            <h2 class="spreadsheets-title">Spreadsheets</h2>
+                            <button type="button" class="primary-btn" id="add-spreadsheet">+　Add</button>
                         </div>
                         <div class="table-container">
                             <table id="spreadsheets-table">
                                 <thead>
                                     <tr>
-                                        <th>名前</th>
-                                        <th>オーナー</th>
-                                        <th>共有日</th>
+                                        <th>Display Name</th>
+                                        <th>Owner</th>
+                                        <th>Shared Date</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -74,7 +75,7 @@
                     </div>
                     <div id="spreadsheet-add">
                         <div class="title">
-                            <h2 class="url-management-title">参照スプレッドシート追加</h2>
+                            <h2 class="spreadsheets-title">Add Reference Spreadsheet</h2>
                         </div>
                         <form id="spreadsheet-form">
                             <div class="form-item">
@@ -85,7 +86,7 @@
                             </div>
                             <div class="form-item">
                                 <span>Display Name</span>
-                                <input id="displayName" placeholder="ex)Aさんから共有されたスプレッドシート" required>
+                                <input id="displayName" placeholder="ex)John's spreadsheet" required>
                             </div>
                             <div class="form-buttons">
                                 <button type="button" class="primary-btn" id="ok-btn">OK</button>
