@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.x'
+    - name: Clear npm cache
+      run: npm cache clean --force
+    - name: Remove node_modules
+      run: rm -rf node_modules
+    - name: Install dependencies
+      run: |
+        npm install
+    - name: Install Jest
+      run: |
+        npm install --save-dev jest
+    - name: Install Babel
+      run: |
+        npm install --save-dev babel-jest @babel/preset-env
+    - name: Run tests
+      run: |
+        npm test -- --verbose
