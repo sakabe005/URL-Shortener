@@ -88,18 +88,18 @@ const getSpreadsheetData = async (range) => {
     }
 
     const data = await response.json();
-    const values = data.values
+    const values = data.values;
 
     if (!Array.isArray(values)) {
-      console.error(data)
-      throw new Error("invalid response")
+      console.error(data);
+      throw new Error("invalid response");
     }
     res.push(...values);
   };
 
-  await Promise.all(spreadsheets.map(async(spreadsheet) => fetchSpreadsheet(spreadsheet.spreadsheetId)));
+  await Promise.all(spreadsheets.map(async (spreadsheet) => fetchSpreadsheet(spreadsheet.spreadsheetId)));
 
-  return res
+  return res;
 };
 
 /**

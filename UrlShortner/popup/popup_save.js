@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
 
-    const token = await getAuthToken()
-    const spreadsheets = await getSpreadsheetsInPopUp()
+    const token = await getAuthToken();
+    const spreadsheets = await getSpreadsheetsInPopUp();
 
     if (spreadsheets.length === 0) {
-      console.error("sync storage is invalid")
+      console.error("sync storage is invalid");
     }
 
-    const defaultSheetId = spreadsheets[0].spreadsheetId
+    const defaultSheetId = spreadsheets[0].spreadsheetId;
 
     const userName = await getUserName(token);
     await addContent(defaultSheetId, token, currentUrl, shortUrl, userName);
