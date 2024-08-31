@@ -37,8 +37,14 @@
     "client_id": "984964282512-fdhojp2pi4a8gdiacmmut124ou98vh69.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/spreadsheets",
-      "https://www.googleapis.com/auth/userinfo.profile"
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/drive.file",
+      "https://www.googleapis.com/auth/drive.readonly"
     ]
   },
-  "omnibox": { "keyword" : "LW" }
+  "omnibox": { "keyword" : "LW" },
+  "web_accessible_resources" : [{
+    "resources": [ "settings/index.html" ],
+      "matches": ["<all_urls>"]
+  }]
 }

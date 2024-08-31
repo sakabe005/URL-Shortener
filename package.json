@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^24.1.1"
+  }
+}

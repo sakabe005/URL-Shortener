@@ -12,6 +12,7 @@
   <script src="popup/popup_save.js"></script>
   <script src="popup/popup_urls.js"></script>
   <script src="popup/popup_tab_groups.js"></script>
+  <script src="popup/popup.js"></script>
   <script src="QRLibrary/qrcode.min.js"></script>
   <script src="qr.js"></script>
   <script src="tab.js"></script>
@@ -19,7 +20,12 @@
 
 <body>
   <div class="container">
-    <h1 class="title">LinkWiz</h1>
+    <div class="header">
+      <h1 class="title">
+        <span class="left-align">LinkWiz</span>
+      </h1>
+      <img id="settingIcon" class="icon" src="img/settingIcon.png" alt="SettingIcon" />
+    </div>
     <ul class="tab-button">
       <li class="tab tab-01 is-active">SHORT</li>
       <li class="tab tab-02">QR</li>
@@ -35,26 +41,6 @@
         <select id="tabGroupSelect"></select>
         <button id="make">Make</button>
         <div id="urlSelection" style="display: none;"></div>
-        <div class="url-management">
-          <h3 class="url-management-title">URL management</h3>
-          <div id="spreadsheets"></div>
-          <form style="display: none;" id="spreadsheet-form">
-            <div class="form-item">
-              <span>New Spreadsheet URL</span>
-              <input id="spreadsheetUrl" placeholder="ex)https://docs.google.com/spreadsheets/d/～" required
-                pattern="https:\/\/docs\.google\.com\/spreadsheets\/d\/.+">
-            </div>
-            <div class="form-item">
-              <span>Display Name</span>
-              <input id="displayName" placeholder="ex)Aさんから共有されたスプレッドシート" required>
-            </div>
-            <div class="form-buttons">
-              <button type="submit" class="add-spreadsheet" id="ok-btn">OK</button>
-              <button type="button" class="add-spreadsheet" id="cancel-btn">cancel</button>
-            </div>
-          </form>
-          <button type="button" class="add-spreadsheet" id="add-spreadsheet">+ Add spreadsheet</button>
-        </div>
       </div>
       <div class="content tab-02">
         <button id="qrCodeCreate" class="generate-qr-btn">Generate QR Code</button>
