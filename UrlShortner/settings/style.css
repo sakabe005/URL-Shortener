@@ -22,6 +22,10 @@ button {
     color: #0f2b46;
 }
 
+.sidebar-item {
+    cursor: pointer;
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -123,6 +127,7 @@ h1 {
 
 #add-spreadsheet {
     margin: auto 0px;
+    font-weight: 600;
 }
 
 .table-container {
@@ -172,6 +177,10 @@ table tr:hover {
 
 thead tr:hover {
     background-color: inherit;
+}
+
+.spreadsheet {
+    cursor: pointer;
 }
 
 .spreadsheet-container {
