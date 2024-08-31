@@ -51,6 +51,7 @@
                 <h1>Settings</h1>
                 <div class="tabs">
                     <button class="tab active" id="spreadsheet-management">Spreadsheet Management</button>
+                    <button class="tab" id="shortcut-management">Shortcut Management</button>
                 </div>
                 <div class="tab-content">
                     <div id="spreadsheets">
@@ -93,6 +94,34 @@
                                 <button type="button" id="cancel-btn">cancel</button>
                             </div>
                         </form>
+                    </div>
+                    <div id="shortcuts" style="display: none;">
+                        <div class="title">
+                            <h2 class="shortcuts-title">Keyboard Shortcuts</h2>
+                        </div>
+                        <form id="shortcut-form">
+                            <span class="shortcut-item">Open LinkWiz Popup</span>
+                            <div class="form-buttons">
+                                <input id="popupShortcut" placeholder="ex) Ctrl+Shift+U" required>
+                                <button type="button" class="primary-btn" id="save-shortcuts">Save</button>
+                            </div>
+                        </form>
+                        <div class="shortcut-examples">
+                            <h3>Valid Shortcut Patterns:</h3>
+                            <ul>
+                                <li>Ctrl+Shift+[Letter]</li>
+                                <li>Alt+Shift+[Letter]</li>
+                                <li>Ctrl+Alt+[Letter]</li>
+                                <li>Ctrl+[Number]</li>
+                                <li>Ctrl+[F1-F12]</li>
+                                <li>Alt+[F1-F12]</li>
+                                <li>MacCtrl+Shift+[Letter] (Mac only)</li>
+                                <li>MacCtrl+Option+[Letter] (Mac only)</li>
+                                <li>Command+Shift+[Letter] (Mac only)</li>
+                                <li>Command+Option+[Letter] (Mac only)</li>
+                            </ul>
+                            <p>Note: [Letter] can be any letter from A to Z. [Number] can be any number from 0 to 9.</p>
+                        </div>
                     </div>
                 </div>
             </div>

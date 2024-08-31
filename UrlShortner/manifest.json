@@ -9,7 +9,8 @@
     "tabGroups",
     "activeTab",
     "identity",
-    "storage"
+    "storage",
+    "commands"
   ],
   "background": {
     "service_worker": "background.js"

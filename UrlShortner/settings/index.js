@@ -22,6 +22,26 @@ const convertRFC3339ToDateTime = (rfc3339String) => {
     return `${year}/${month}/${day} ${hours}:${minutes}`;
 };
 
+const convertShortcutToStorageFormat = (shortcut) => {
+    return shortcut
+        .replace('Command+', '⌘')
+        .replace('Shift+', '⇧')
+        .replace('Option+', '⌥')
+        .replace('Ctrl+', '⌃')
+        .replace(/\+/g, '');
+};
+
+const convertShortcutToPresentationFormat = (shortcut) => {
+    if (!shortcut) return '';
+
+    return shortcut
+        .replace('⌘', 'Command+')
+        .replace('⇧', 'Shift+')
+        .replace('⌥', 'Option+')
+        .replace('⌃', 'Ctrl+')
+        .replace(/\+\+/g, '+');
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     const navLi = document.querySelectorAll("nav li");
 
@@ -85,6 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.getElementById("spreadsheet-management").addEventListener("click", handleClickSpreadsheetManagement);
+    document.getElementById("shortcut-management").addEventListener("click", handleClickShortcutManagement);
 
     document.querySelectorAll('.spreadsheet').forEach(element => {
         element.addEventListener('click', handleClickSpreadsheetRow);
@@ -108,6 +129,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         element.addEventListener('click', handleDeleteSpreadsheet);
     });
 
+    handleClickSpreadsheetManagement();
+    document.getElementById('save-shortcuts').addEventListener('click', handleSaveShortcuts);
     // クリック以外の場所をクリックしたときにモーダルを閉じる
     document.addEventListener('click', closeAllModals);
 });
@@ -124,7 +147,26 @@ const switchManagementPageDisplay = (type) => {
 };
 
 const handleClickSpreadsheetManagement = () => {
-    switchManagementPageDisplay("management");
+    document.getElementById("spreadsheet-management").classList.add("active");
+    document.getElementById("shortcut-management").classList.remove("active");
+    document.getElementById("spreadsheets").style.display = "block";
+    document.getElementById("shortcuts").style.display = "none";
+};
+
+const handleClickShortcutManagement = () => {
+    document.getElementById("spreadsheet-management").classList.remove("active");
+    document.getElementById("shortcut-management").classList.add("active");
+    document.getElementById("spreadsheets").style.display = "none";
+    document.getElementById("shortcuts").style.display = "block";
+
+    chrome.commands.getAll((commands) => {
+        commands.forEach((command) => {
+            if (command.name === "_execute_action") {
+                const popupShortcutInput = document.getElementById('popupShortcut');
+                popupShortcutInput.value = convertShortcutToPresentationFormat(command.shortcut);
+            }
+        });
+    });
 };
 
 const handleClickSpreadsheetRow = (event) => {
@@ -267,6 +309,23 @@ const handleDeleteSpreadsheet = async (event) => {
         await chrome.storage.sync.set({ spreadsheets: updatedSpreadsheets });
         window.location.reload();
     }
+};
+
+const handleSaveShortcuts = () => {
+    const newShortcut = document.getElementById('popupShortcut').value;
+    const storageFormatShortcut = convertShortcutToStorageFormat(newShortcut);
+
+    chrome.commands.update({
+        name: "_execute_action",
+        shortcut: storageFormatShortcut
+    }, () => {
+        if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError);
+            alert('Error updating shortcut. Please try a different combination.');
+        } else {
+            alert('Shortcut updated successfully!');
+        }
+    });
 };
 
 /**
