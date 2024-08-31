@@ -42,7 +42,6 @@ button:hover {
 .input-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
 }
 
 #shortUrl1 {
@@ -148,4 +147,34 @@ button:hover {
 .content.is-display {
     display: block;
     border: 2px solid #7e57c2;
+}
+
+#tabGroupSelect {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin: 10px 0;
+}
+
+.selection-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.item-type {
+    font-weight: bold;
+    margin-right: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.item-text {
+    flex-grow: 1;
 }

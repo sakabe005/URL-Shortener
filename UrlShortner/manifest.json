@@ -6,6 +6,7 @@
     "contextMenus",
     "storage",
     "tabs",
+    "tabGroups",
     "activeTab",
     "identity",
     "storage"

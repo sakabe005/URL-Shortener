@@ -5,18 +5,25 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('make').addEventListener('click', async function () {
     const currentUrl = await getCurrentURL();
     const shortUrl = document.getElementById('shortUrl1').value;
+    const selectedGroupId = document.getElementById('tabGroupSelect').value;
 
     const token = await getAuthToken();
     const spreadsheets = await getSpreadsheetsInPopUp();
 
     if (spreadsheets.length === 0) {
       console.error("sync storage is invalid");
+      return;
     }
 
     const defaultSheetId = spreadsheets[0].spreadsheetId;
 
     const userName = await getUserName(token);
     await addContent(defaultSheetId, token, currentUrl, shortUrl, userName);
+
+    if (selectedGroupId) {
+      await addCurrentTabToGroup(parseInt(selectedGroupId));
+    }
+
     showUrls(currentUrl, shortUrl);
   });
 });
@@ -193,4 +200,26 @@ async function getUserName(token) {
 
   const data = await response.json();
   return data.name || 'Unknown User';
+}
+
+async function addCurrentTabToGroup(groupId) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs.length === 0) {
+        reject(new Error('No active tab found'));
+        return;
+      }
+
+      const currentTab = tabs[0];
+      chrome.tabs.group({ tabIds: currentTab.id, groupId: groupId }, function(groupId) {
+        if (chrome.runtime.lastError) {
+          console.error('Error adding tab to group:', chrome.runtime.lastError);
+          reject(chrome.runtime.lastError);
+        } else {
+          console.log('Tab added to group successfully');
+          resolve(groupId);
+        }
+      });
+    });
+  });
 }

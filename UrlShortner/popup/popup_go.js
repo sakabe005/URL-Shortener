@@ -4,11 +4,61 @@ const defaultSheetName = "URLs";
 
 //Goを押された場合、入力バーの中に入れた数値によって、リンクつけられたURLへ移動
 document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('shortUrl1');
+
+  // ポップアップが開かれたときに入力欄にフォーカスを当てる
+  input.focus();
+  input.addEventListener('keydown', handleKeyDown);
+  document.addEventListener('keydown', handleSelectionKeyDown);
+
   document.getElementById('go').addEventListener('click', handleGoClick);
 });
 
+function handleKeyDown(event) {
+  if (event.isComposing) return;
+
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (event.ctrlKey || event.metaKey) {
+      document.getElementById('make').click();
+    } else {
+      document.getElementById('go').click();
+    }
+  }
+}
+
+function handleSelectionKeyDown(event) {
+  const selectionDiv = document.getElementById('urlSelection');
+  if (selectionDiv.style.display !== 'block') return;
+
+  const buttons = selectionDiv.querySelectorAll('.selection-item');
+  const focusedElement = document.activeElement;
+  let currentIndex = Array.from(buttons).indexOf(focusedElement);
+
+  switch (event.key) {
+    case 'ArrowUp':
+      event.preventDefault();
+      if (currentIndex > 0) {
+        buttons[currentIndex - 1].focus();
+      }
+      break;
+    case 'ArrowDown':
+      event.preventDefault();
+      if (currentIndex < buttons.length - 1) {
+        buttons[currentIndex + 1].focus();
+      }
+      break;
+    case 'Enter':
+      event.preventDefault();
+      if (focusedElement.classList.contains('selection-item')) {
+        focusedElement.click();
+      }
+      break;
+  }
+}
+
 async function handleGoClick() {
-  const shortUrl = document.getElementById('shortUrl1').value;
+  const input = document.getElementById('shortUrl1').value;
   const range = `${defaultSheetName}!A:Z`;  // データを取得する範囲
 
   const data = await getSpreadsheetData(range);
@@ -17,31 +67,40 @@ async function handleGoClick() {
     return;
   }
 
-  const matchingUrls = data.filter(row => row[1] === shortUrl);
+  const matchingUrls = data.filter(row => row[1] === input);
+  const groups = await getTabGroups();
+  const matchingGroups = groups.filter(group => group.title.toLowerCase().includes(input.toLowerCase()));
 
-  if (matchingUrls.length === 0) {
-    alert('No URL found');
-  } else if (matchingUrls.length === 1) {
+  if (matchingUrls.length === 0 && matchingGroups.length === 0) {
+    alert('No URL or tab group found');
+  } else if (matchingUrls.length === 1 && matchingGroups.length === 0) {
     await incrementUserCount(matchingUrls[0]);
     chrome.tabs.update({ url: matchingUrls[0][0] });
+  } else if (matchingUrls.length === 0 && matchingGroups.length === 1) {
+    focusTabGroup(matchingGroups[0].id);
   } else {
-    showUrlSelection(matchingUrls);
+    showCombinedSelection(matchingUrls, matchingGroups);
   }
 }
 
-function showUrlSelection(urls) {
+function showCombinedSelection(urls, groups) {
   const selectionDiv = document.getElementById('urlSelection');
-  selectionDiv.innerHTML = '';
+  selectionDiv.innerHTML = '<h3>Links with duplicate names:</h3>';
 
-  urls.forEach((url, index) => {
-    const urlElement = document.createElement('button');
-    urlElement.className = 'url-item';
-    urlElement.textContent = getDisplayUrl(url[0]);
-    urlElement.addEventListener('click', async () => {
+  urls.forEach((url) => {
+    const itemElement = createSelectionButton(url[0], 'URL', async () => {
       await incrementUserCount(url);
       chrome.tabs.update({ url: url[0] });
     });
-    selectionDiv.appendChild(urlElement);
+    selectionDiv.appendChild(itemElement);
+  });
+
+  groups.forEach((group) => {
+    const itemElement = createSelectionButton(group.title || `Group ${group.id}`, 'Group', () => {
+      focusTabGroup(group.id);
+    });
+    itemElement.style.backgroundColor = group.color || '#FFFFFF';
+    selectionDiv.appendChild(itemElement);
   });
 
   selectionDiv.style.display = 'block';
@@ -51,6 +110,25 @@ function showUrlSelection(urls) {
   }
 }
 
+function createSelectionButton(text, type, clickHandler) {
+  const itemElement = document.createElement('button');
+  itemElement.className = 'selection-item';
+
+  const typeSpan = document.createElement('span');
+  typeSpan.className = 'item-type';
+  typeSpan.textContent = type;
+  itemElement.appendChild(typeSpan);
+
+  const textSpan = document.createElement('span');
+  textSpan.className = 'item-text';
+  textSpan.textContent = type === 'URL' ? getDisplayUrl(text) : text;
+  itemElement.appendChild(textSpan);
+
+  itemElement.addEventListener('click', clickHandler);
+
+  return itemElement;
+}
+
 function getDisplayUrl(url) {
   try {
     const urlObj = new URL(url);
@@ -58,6 +136,24 @@ function getDisplayUrl(url) {
   } catch (e) {
     return url;
   }
+}
+
+async function getTabGroups() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action: "getTabGroups" }, (response) => {
+      resolve(response);
+    });
+  });
+}
+
+function focusTabGroup(groupId) {
+  chrome.tabGroups.update(groupId, { collapsed: false });
+  chrome.tabs.query({ groupId: groupId }, (tabs) => {
+    if (tabs.length > 0) {
+      chrome.tabs.update(tabs[0].id, { active: true });
+      chrome.windows.update(tabs[0].windowId, { focused: true });
+    }
+  });
 }
 
 /**
