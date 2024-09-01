@@ -83,15 +83,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${sharedTime}</td>
                 <td>
                     <div class="action-container">
-                        <img class="three-point-reader" src="../static/three-point-reader.png" alt="action" />
+                        <img class="three-point-reader" src="../assets/icons/three-point-reader.png" alt="action" />
                         <div class="modal">
                             <div>
                                 <div class="modal-content">
-                                    <img class="icon" src="../static/edit.png" alt="edit" />
+                                    <img class="icon" src="../assets/icons/edit.png" alt="edit" />
                                     <button class="rename-btn">edit name</button>
                                 </div>
                                 <div class="modal-content" style="${i === 0 ? 'display:none;' : ''}">
-                                    <img class="icon" src="../static/trash.png" alt="trash" />
+                                    <img class="icon" src="../assets/icons/trash.png" alt="trash" />
                                     <button class="delete-btn">delete</button>
                                 </div>
                             </div>
