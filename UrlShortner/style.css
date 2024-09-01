@@ -36,6 +36,14 @@ button:hover {
 .title {
     font-size: 24px;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.main-icon {
+    width: 40px;
+    height: 40px;
 }
 
 .input-container {
@@ -188,7 +196,7 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .setting-icon {
